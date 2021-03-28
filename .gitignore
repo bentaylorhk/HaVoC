@@ -367,3 +367,5 @@ CMakeCache.txt
 CMakeFiles
 cmake_install.cmake
 CppProperties.json
+
+*.nes
