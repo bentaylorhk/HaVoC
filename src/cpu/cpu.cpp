@@ -2,13 +2,15 @@
 // Benjamin Michael Taylor
 // 2021
 
+#include "cpu.h"
 
+#include <cstdint>
+#include <stdio.h>
+#include <spdlog/spdlog.h>
 
-// Internal Working RAM
-uint8_t ram[0x800];
-
-void fetch() {
+void Cpu::fetch() {
+    spdlog::debug("Real Hello Debug");
 }
 
-void execute() {
+void Cpu::execute() {
 }

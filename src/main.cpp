@@ -3,32 +3,16 @@
 // 2021
 
 #include <iostream>
+#include <spdlog/spdlog.h>
 
-// Registers
-uint16_t pc;
-uint8_t ac;
-uint8_t x;
-uint8_t y;
-uint8_t sr;
-uint8_t sp;
+#include "cpu/cpu.h"
 
-// Internal Working RAM
-uint8_t ram[0x800];
-
-void initialiseMemory() {
-    // allocate ram
-    // setup stack pointer
-}
-
-void fetch() {
-
-}
-
-void execute() {
-
-}
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 
 int main() {
+    // Setting up the logger level.
+    spdlog::set_level(spdlog::level::trace);
+
     // read in rom
 
     // setup registers and memory
@@ -37,5 +21,7 @@ int main() {
 
     // cleanup
     printf("Hello World");
+    Cpu cpu;
+    cpu.fetch();
     return 0;
 }
