@@ -2,7 +2,7 @@
 // Benjamin Michael Taylor
 // 2021
 
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 
 #include <iostream>
 #include <spdlog/spdlog.h>
@@ -20,7 +20,7 @@ int main() {
     // fetch execute cycle
 
     // cleanup
-    printf("Hello World");
+
     Cpu cpu;
     cpu.fetch();
     return 0;

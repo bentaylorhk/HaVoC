@@ -9,6 +9,6 @@ project(
   VERSION 0.1
   DESCRIPTION "NES/Famicon Emulator created in C++")
 
-add_subdirectory(src)
+include_directories(include)
 
-add_executable(HaVoC src/main.cpp)
+add_subdirectory(src)
