@@ -2,12 +2,12 @@
 // Benjamin Michael Taylor
 // 2021
 
+#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
+
 #include <iostream>
 #include <spdlog/spdlog.h>
 
 #include "cpu/cpu.h"
-
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 
 int main() {
     // Setting up the logger level.

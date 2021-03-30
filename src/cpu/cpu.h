@@ -14,8 +14,4 @@ class Cpu {
     public:
         void fetch();
         void execute();
-
-    //private:
-    //  std::shared_ptr<spdlog::logger> logger;
-
 };

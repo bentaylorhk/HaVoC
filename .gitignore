@@ -363,7 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 CMakeCache.txt
-*.vcxproj*
 CMakeFiles
 cmake_install.cmake
 CppProperties.json
