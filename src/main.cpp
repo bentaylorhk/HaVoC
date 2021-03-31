@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Opening the .nes file.
-    FILE* nesFile;
+    FILE *nesFile;
     const char *fileName = argv[1];
     errno_t err = fopen_s(&nesFile, fileName, "rb");
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
 
     // Ensuring it's closed.
     fclose(nesFile);
-
+    
     // setup registers and memory
 
     // fetch execute cycle
@@ -63,5 +63,5 @@ int main(int argc, char *argv[]) {
 
     Cpu cpu;
     cpu.fetch();
-    return 0;
+    return EXIT_SUCCESS;
 }

@@ -11,9 +11,9 @@ class Cpu {
     uint8_t sr;
     uint8_t sp;
 
-    public:
-        Cpu();
-        ~Cpu();
-        void fetch(void);
-        void execute(void);
+public:
+    Cpu();
+    ~Cpu();
+    void fetch(void);
+    void execute(void);
 };
