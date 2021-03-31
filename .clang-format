@@ -33,8 +33,8 @@ IndentPPDirectives: None
 IndentWidth: 4
 MaxEmptyLinesToKeep: 10
 NamespaceIndentation: All
-PointerAlignment: Left
-SortIncludes: false
+PointerAlignment: Right
+SortIncludes: true
 SortUsingDeclarations: false
 SpaceAfterCStyleCast: false
 SpaceBeforeAssignmentOperators: true
