@@ -5,6 +5,7 @@
 #include "mmc.h"
 
 #include <string>
+#include <stdio.h>
 #include <spdlog/spdlog.h>
 
 Mmc::Mmc() {
@@ -12,7 +13,7 @@ Mmc::Mmc() {
 }
 
 Mmc::Mmc(FILE *nesFile) {
-    Mmc::nesFile = nesFile;
+    Mmc::pNesFile = nesFile;
     parseNesFile();
 }
 
@@ -29,11 +30,22 @@ void Mmc::parseNesFile() {
     }
 
     // Setting up the ROMs to the size found in the header.
-    prgRom = new uint8_t[prgRomSizeBytes];
-    readFileBytes(prgRom, prgRomSizeBytes);
+    pPrgRom = new uint8_t[prgRomSizeBytes];
+    readFileBytes(pPrgRom, prgRomSizeBytes);
 
-    chrRom = new uint8_t[chrRomSizeBytes];
-    readFileBytes(chrRom, chrRomSizeBytes);
+    pChrRom = new uint8_t[chrRomSizeBytes];
+    readFileBytes(pChrRom, chrRomSizeBytes);
+
+    // TODO: Implement PlayChoice
+
+    // Ensuring EOF has been reached, fread should return 0 bytes read.
+    uint8_t buffer[1];
+    if (!fread(buffer, sizeof(uint8_t), 1, pNesFile)) {
+        spdlog::trace("iNES EOF Reached");
+    }
+    else {
+        throw NesFileException("EOF not reached when nothing more is expected");
+    }
 }
 
 void Mmc::parseHeader() {
@@ -49,24 +61,26 @@ void Mmc::parseHeader() {
 
     // Getting the PRG ROM size.
     readFileBytes(&prgRomSize, 1);
-    prgRomSizeBytes = (uint32_t)prgRomSize * 0x4000;
     if (prgRomSize < 0x01 || prgRomSize > 0x40) {
         throw NesFileException("Invalid PRG ROM size in .nes header");
     }
+    prgRomSizeBytes = (uint32_t)prgRomSize * 0x4000;
     spdlog::trace("PRG ROM Size: {} Bytes", prgRomSizeBytes);
 
     // Getting the CHR ROM size, or if it uses CHR RAM.
     readFileBytes(&chrRomSize, 1);
-    chrRomSizeBytes = (uint32_t)chrRomSize * 0x2000;
+    
     if (chrRomSize > 0x40) {
         throw NesFileException("Invalid CHR ROM size in .nes header");
     }
-    else if (chrRom == 0) {
+    else if (chrRomSize == 0) {
         // TODO: Start CHRRAM here or always do so, and should some
         // safety be done for accessing the chrROM? Could have a
         // chr enabbled bool and check that in the read CHR method.
+        throw NesFileException("CHR RAM not implemented");
     }
     else {
+        chrRomSizeBytes = (uint32_t)chrRomSize * 0x2000;
         spdlog::trace("CHR ROM Size: {} Bytes", chrRomSizeBytes);
     }
 
@@ -87,7 +101,8 @@ void Mmc::parseHeader() {
     // TODO: Implement Lower Nibble.
     readFileBytes(buffer, 1);
     mapper |= buffer[0] & HIGH_NIBBLE;
-    // TODO: Implement Mapper (needed for games beyone Super Mario Bros.
+    spdlog::trace("Mapper: {:02X}", mapper);
+    // TODO: Implement Mapper (needed for games beyone Super Mario Bros. 3)
 
     // TODO: Implement PRG RAM Size.
     readFileBytes(buffer, 1);
@@ -113,9 +128,34 @@ void Mmc::parseHeader() {
 }
 
 void Mmc::readFileBytes(uint8_t *byteBuffer, size_t count) {
-    fread(byteBuffer, sizeof(uint8_t), count, nesFile);
+    size_t itemsRead = fread(byteBuffer, sizeof(uint8_t), count, pNesFile);
+    if (itemsRead != count) {
+        std::string errMsg = std::to_string(itemsRead);
+        errMsg.append(" bytes read from file instead of ");
+        errMsg.append(std::to_string(count));
+        errMsg.append(" requested");
+        throw NesFileException(errMsg.c_str());
+    }
 }
 
-uint8_t readByte(uint16_t address) {
-    return 0;
+uint8_t Mmc::readByte(uint16_t address) {
+    return *getAddressPointer(address);
+}
+
+void Mmc::writeByte(uint16_t address, uint8_t value) {
+    *getAddressPointer(address) = value;
+}
+
+uint8_t *Mmc::getAddressPointer(uint16_t address) {
+    // Depending on which device the address is mapped to.
+    if (address < 0x2000) {
+        // Given the RAM is mirrored to RAM_SIZE.
+        return &ram[address % RAM_SIZE];
+    }
+    else if (address < 0x4000) {
+        //return &ppuRegisters[address % 8];
+        // ^ More complex than that, reading and writing causes special tings.
+        // Could still returnn it at the end bbut after doing mad shiez.
+        // Might have to do similar thing but still seperate read and write.
+    }
 }

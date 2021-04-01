@@ -31,20 +31,21 @@ public:
 class Mmc {
 public:
     Mmc();
-    Mmc(FILE *nesFile);
+    Mmc(FILE *pNesFile);
     ~Mmc();
 
     uint8_t readByte(uint16_t address);
+    void writeByte(uint16_t address, uint8_t value);
 
 private:
-    FILE *nesFile;
+    FILE *pNesFile;
 
     uint8_t ram[RAM_SIZE] = { 0 };
 
     uint8_t *trainer;
 
-    uint8_t *prgRom;
-    uint8_t *chrRom;
+    uint8_t *pPrgRom;
+    uint8_t *pChrRom;
 
     uint8_t prgRomSize;
     uint8_t chrRomSize;
@@ -63,6 +64,9 @@ private:
     void parseHeader();
 
     void readFileBytes(uint8_t* byteBuffer, size_t count);
+
+    uint8_t *getAddressPointer(uint16_t address);
+    uint8_t *getRamPointer(uint16_t address);
 };
 
 

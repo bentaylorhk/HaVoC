@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
 
     // Parsing the command line args.
     if (argc != 2) {
-        spdlog::error("You gave {} args, please only give a .nes file.", argc - 1);
+        spdlog::error("You gave {} args, please only give a .nes file", argc - 1);
         return 1;
     }
 
